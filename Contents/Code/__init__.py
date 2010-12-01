@@ -85,7 +85,7 @@ def ParseCategoryXML(sender, title, link, page):
 	xmlfeed = XML.ElementFromURL(locallink,encoding = "iso-8859-1")
 	
 	if (page>1):
-		dir.Append(Function(DirectoryItem(ParseCategoryXML, title="Previous Zeite"),title =title, link = link , page = page - 1))
+		dir.Append(Function(DirectoryItem(ParseCategoryXML, title="Vorhergehende Seite"),title =title, link = link , page = page - 1))
 	
 	for video in xmlfeed.xpath("//playlist/listitem"):
 		id = video.xpath("videoid")[0].text
@@ -101,9 +101,20 @@ def ParseCategoryXML(sender, title, link, page):
 		  thumbpath = video.xpath("thumb")[0].text
 		except: 
 		  thumbpath = ''
+		  
+		try:
+	  	  duration = video.xpath("playtime")[0].text.split(':')
+	  	  if len(duration) == 3:
+		    duration = (int(duration[0])*3600 + int(duration[1])*60 + int(duration[2]))*1000 
+	  	  else:
+		    duration = (int(duration[0])*60 + int(duration[1]))*1000
+		except:
+		  duration = 0
+		  
+		Log(duration)
 
 		if Prefs['ShowAllRes'] == "Alle" :
-			dir.Append(Function(DirectoryItem(ParseVideoXML, title=title, summary = summary, thumb=Function(GetThumb,path = thumbpath)),title =title, summary = summary, thumbpath = thumbpath, link = (VIDEOXML_URL%id)))
+			dir.Append(Function(DirectoryItem(ParseVideoXML, title=title, summary = summary, duration = duration, thumb=Function(GetThumb,path = thumbpath)),title =title, summary = summary, thumbpath = thumbpath, link = (VIDEOXML_URL%id)))
 		else:
 			maxres = 0
 			url = None	
@@ -119,14 +130,14 @@ def ParseCategoryXML(sender, title, link, page):
 							maxres = currentres
 							url = VIDEOFILE_URL % stream.xpath("filename")[0].text
 			if (url != None):
-				dir.Append(VideoItem(url, title=title, summary=summary, thumb=Function(GetThumb,path=thumbpath))) 
+				dir.Append(VideoItem(url, title=title, summary=summary, duration = duration, thumb=Function(GetThumb,path=thumbpath))) 
 
 	if (page>0):
 		#nextpage = ("Nächste Seite").decode("iso-8859-1").encode("utf-8")
 		dir.Append(Function(DirectoryItem(ParseCategoryXML, title="Nächste Seite"),title = title, link = link , page = page + 1)) #ä
 	return dir     
 
-def ParseVideoXML(sender, title, summary, thumbpath, link):
+def ParseVideoXML(sender, title, summary, duration, thumbpath, link):
 	dir = MediaContainer(art = R(ART), viewGroup = "List", title2 = title)
 	Log(link)
 	xmlfeed = XML.ElementFromURL(link,encoding = "iso-8859-1")
@@ -141,5 +152,5 @@ def ParseVideoXML(sender, title, summary, thumbpath, link):
 			extension = filename[filename.find('.')+1:]
 			thistitle = title + " - " + width + "x" + height + " - " + extension
 			if (extension=="mp4" or extension=="flv"):
-				dir.Append(VideoItem(url, title=thistitle, summary=summary, thumb=Function(GetThumb,path=thumbpath))) 
+				dir.Append(VideoItem(url, title=thistitle, summary=summary, duration = duration, thumb=Function(GetThumb,path=thumbpath))) 
 	return dir
