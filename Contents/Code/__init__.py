@@ -53,8 +53,8 @@ def MainMenu():
 	dir = MediaContainer(art = R(ART), viewGroup = "List")
 	dir.Append(Function(DirectoryItem(AllVideos, title="Alle Videos", thumb=R(ICON) )))
 	dir.Append(Function(DirectoryItem(ParseCategoryXML, title="Am meisten angesehen", thumb=R(ICON)),title = "Am meisten angesehen", link = (FEATURED_URL%"toptwentyseen"), page = 0))
-	dir.Append(Function(DirectoryItem(ParseCategoryXML, title="Am meisten verschikt", thumb=R(ICON)),title = "Am meisten verschikt", link = (FEATURED_URL%"toptwenty"), page = 0))
-	dir.Append(PrefsItem(title="Einstellungen",subtile="",summary="Einstellungen",thumb=R(PREFS)))
+	dir.Append(Function(DirectoryItem(ParseCategoryXML, title="Am meisten verschickt", thumb=R(ICON)),title = "Am meisten verschickt", link = (FEATURED_URL%"toptwenty"), page = 0))
+	dir.Append(PrefsItem(title="Einstellungen",subtile="",summary="",thumb=R(PREFS)))
 
 	return dir
     

@@ -8,7 +8,7 @@
   {
     "id":"ShowAllRes",
     "type":"enum",
-    "label":"Alle Auflösungen - nur die höchste Auflösung anzeigen",
+    "label":"Video-Qualität",
     "values":["Alle", "höchste"],
     "default":"höchste"
   }
